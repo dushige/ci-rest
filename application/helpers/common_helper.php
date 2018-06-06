@@ -44,7 +44,7 @@ function is_login() {
     $CI = &get_instance();
 
     if (!isset($CI->session)) {
-        return false;
+        return FALSE;
     }
 
     return $CI->session->userdata('_is_login_') == true;
@@ -68,7 +68,7 @@ function current_uid() {
     $CI = &get_instance();
 
     if (!isset($CI->session)) {
-        return false;
+        return FALSE;
     }
 
     return $CI->session->userdata('_uid_');
