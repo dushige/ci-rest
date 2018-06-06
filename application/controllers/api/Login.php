@@ -11,7 +11,7 @@ class Login extends API_Controller {
 
         if (is_login()) {
             $result->uid = current_uid();
-            $result->set_success();
+            $result->set_success('已登陆');
         } else {
             $this->session->sess_regenerate();
             $userService = UserService::get_instance();
