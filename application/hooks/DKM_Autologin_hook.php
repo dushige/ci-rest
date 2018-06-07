@@ -25,6 +25,6 @@ class DKM_Autologin_hook {
             return;
         }
 
-        redirect('/api/login');
+        redirect('api/login');
     }
 }
