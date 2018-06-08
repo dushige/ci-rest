@@ -8,6 +8,7 @@
  * @property CI_Input                     $input
  * @property CI_Calendar                  $calendar
  * @property CI_Encrypt                   $encrypt
+ * @property CI_Encryption                $encryption
  * @property CI_Ftp                       $ftp
  * @property CI_Hooks                     $hooks
  * @property CI_Image_lib                 $image_lib
