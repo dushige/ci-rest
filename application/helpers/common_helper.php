@@ -219,7 +219,7 @@ function check_password($password) {
  * @return boolean
  */
 function check_email($email) {
-    $pattern = '/^[a-z]([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$/i';
+    $pattern = '/^[a-z]([a-z0-9]*[-_\.]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$/i';
     if (!preg_match($pattern, $email)) {
         return FALSE;
     }
