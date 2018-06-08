@@ -324,8 +324,10 @@ class CI_Loader {
 			}
 		}
 
+        $app_name = config_item('app_name');
+        $model_with_namespace = $app_name . '\\models\\' . str_replace('/', '\\', $path) . $model;
 		$model = ucfirst($model);
-		if ( ! class_exists($model, FALSE))
+		if ( ! class_exists($model_with_namespace, FALSE))
 		{
 			foreach ($this->_ci_model_paths as $mod_path)
 			{
@@ -335,7 +337,7 @@ class CI_Loader {
 				}
 
 				require_once($mod_path.'models/'.$path.$model.'.php');
-				if ( ! class_exists($model, FALSE))
+				if ( ! class_exists($model_with_namespace, FALSE))
 				{
 					throw new RuntimeException($mod_path."models/".$path.$model.".php exists, but doesn't declare class ".$model);
 				}
@@ -343,18 +345,18 @@ class CI_Loader {
 				break;
 			}
 
-			if ( ! class_exists($model, FALSE))
+			if ( ! class_exists($model_with_namespace, FALSE))
 			{
 				throw new RuntimeException('Unable to locate the model you have specified: '.$model);
 			}
 		}
-		elseif ( ! is_subclass_of($model, 'CI_Model'))
+		elseif ( ! is_subclass_of($model_with_namespace, 'CI_Model'))
 		{
 			throw new RuntimeException("Class ".$model." already exists and doesn't extend CI_Model");
 		}
 
 		$this->_ci_models[] = $name;
-		$model = new $model();
+		$model = new $model_with_namespace();
 		$CI->$name = $model;
 		log_message('info', 'Model "'.get_class($model).'" initialized');
 		return $this;

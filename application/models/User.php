@@ -1,11 +1,23 @@
 <?php
 
+namespace dkm\models;
 use dkm\libraries\service\UserService;
 
-class User extends DKM_Model {
+/**
+ * Class User
+ *
+ * @property string $name
+ */
+class User extends \DKM_Model {
 
     protected $table_name = 'user';
 
+    /**
+     * get user by uid
+     *
+     * @param mixed $uid
+     * @return mixed
+     */
     public function get_by_uid($uid) {
         if (!check_id($uid)) {
             return FALSE;
@@ -13,6 +25,12 @@ class User extends DKM_Model {
         return $this->get_by_id($uid);
     }
 
+    /**
+     * get users by uids
+     *
+     * @param array $uids
+     * @return mixed
+     */
     public function get_by_uids($uids) {
         if (!check_ids($uids)) {
             return FALSE;
@@ -20,6 +38,12 @@ class User extends DKM_Model {
         return $this->get_by_ids($uids);
     }
 
+    /**
+     * get user by username
+     *
+     * @param string $username
+     * @return mixed
+     */
     public function get_by_username($username) {
         if (!check_username($username)) {
             return FALSE;
@@ -27,6 +51,12 @@ class User extends DKM_Model {
         return $this->db->get_where($this->table_name, ['username' => $username])->row();
     }
 
+    /**
+     * get user by tel
+     *
+     * @param string $tel
+     * @return mixed
+     */
     public function get_by_tel($tel) {
         if (!check_tel($tel)) {
             return FALSE;
@@ -34,6 +64,12 @@ class User extends DKM_Model {
         return $this->db->get_where($this->table_name, ['tel' => $tel])->row();
     }
 
+    /**
+     * get user by email
+     *
+     * @param string $email
+     * @return mixed
+     */
     public function get_by_email($email) {
         if (!check_email($email)) {
             return FALSE;
@@ -41,6 +77,33 @@ class User extends DKM_Model {
         return $this->db->get_where($this->table_name, ['email' => $email])->row();
     }
 
+    /**
+     * update user by uid
+     *
+     * @param int $uid
+     * @param array $field_array
+     * @return mixed
+     */
+    public function update_by_uid($uid, $field_array) {
+        if (!check_id($uid) || !is_array($field_array)) {
+            return FALSE;
+        }
+
+        $this->update_by_id($uid, $field_array);
+        return $this->affected_rows();
+    }
+
+    /**
+     * add user
+     *
+     * @param string $username
+     * @param string $password
+     * @param string $name
+     * @param string $email
+     * @param string $tel
+     * @param int $status
+     * @return mixed
+     */
     public function add($username, $password, $name, $email, $tel, $status = UserService::USER_STATUS_NORMAL) {
         $now = time();
 

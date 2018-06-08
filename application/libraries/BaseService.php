@@ -1,7 +1,12 @@
 <?php
 
-namespace dkm\libraries\service;
+namespace dkm\libraries;
 
+/**
+ * Class BaseService
+ * @package dkm\libraries
+ * @property \DKM_Controller $CI
+ */
 abstract class BaseService {
     protected static $instance_map = NULL;
     protected $CI = NULL;

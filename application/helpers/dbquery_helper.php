@@ -12,6 +12,9 @@ define('WHERE_OPERATOR_NOT_LIKE', 'NOT LIKE ');
 define('WHERE_ORDER_ASC', 'asc');
 define('WHERE_ORDER_DESC', 'desc');
 
+/**
+ * 查询辅助类
+ */
 class MixedQueryCondition {
 
     private $ar_where = [];
@@ -67,6 +70,11 @@ class MixedQueryCondition {
 
 }
 
+/**
+ * 新建查询辅助类
+ *
+ * @return MixedQueryCondition
+ */
 function createMixedQueryCondition() {
     return new MixedQueryCondition();
 }

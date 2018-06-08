@@ -75,16 +75,19 @@ function current_uid() {
 }
 
 /**
- * 检查类似id的格式
+ * 检查类似id的格式，必须是整型或字符串整数
  *
  * @param int $id
  * @return boolean
  */
 function check_id($id) {
-    if (empty($id) || !is_numeric($id) || !is_int($id)) {
+    if (empty($id)) {
+        return FALSE;
+    } elseif (is_int($id) || is_string($id) && ctype_digit($id)) {
+        return TRUE;
+    } else {
         return FALSE;
     }
-    return TRUE;
 }
 
 /**

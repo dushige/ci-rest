@@ -2,6 +2,13 @@
 
 namespace dkm\libraries\service;
 
+use dkm\libraries\BaseService;
+
+/**
+ * Class UserService
+ * @package dkm\libraries\service
+ * @method static UserService get_instance()
+ */
 class UserService extends BaseService {
     const USER_STATUS_NORMAL = 1;
     const USER_STATUS_DELETE = 2;
@@ -22,7 +29,7 @@ class UserService extends BaseService {
      * @param string $email
      * @param string $tel
      * @param int $status
-     * @return Result
+     * @return \Result
      */
     public function regist($username, $password, $name, $email, $tel, $status = self::USER_STATUS_NORMAL) {
         $result = $this->beforeRegist($username, $password, $name, $email, $tel, $status);
@@ -48,7 +55,7 @@ class UserService extends BaseService {
      * @param string $email
      * @param string $tel
      * @param string $status
-     * @return Result
+     * @return \Result
      */
     private function beforeRegist($username, $password, $name, $email, $tel, $status) {
         $result = new \Result();
@@ -119,8 +126,8 @@ class UserService extends BaseService {
     /**
      * 注册
      *
-     * @param Result $result
-     * @return Result
+     * @param \Result $result
+     * @return \Result
      */
     private function doRegist(&$result) {
         $username = $result->username;
@@ -130,7 +137,7 @@ class UserService extends BaseService {
         $tel = $result->tel;
         $status = $result->status;
 
-        $this->CI->load->model('user');
+        load_model('user');
         $uid = $this->CI->user->add($username, $password, $name, $email, $tel, $status);
         if (empty($uid)) {
             $result->set_error('网络繁忙');
@@ -145,8 +152,8 @@ class UserService extends BaseService {
     /**
      * 注册后
      *
-     * @param Result $result
-     * @return void
+     * @param \Result $result
+     * @return \Result
      */
     private function afterRegist(&$result) {
         // 暂时不做什么
@@ -160,7 +167,7 @@ class UserService extends BaseService {
      * @param string $password
      * @param string $tel
      * @param string $email
-     * @return boolean
+     * @return \Result
      */
     public function login($field, $password) {
         $result = new \Result();
@@ -193,11 +200,129 @@ class UserService extends BaseService {
         }
     }
 
+    /**
+     * 写Session
+     *
+     * @param int $uid
+     * @param string $email
+     * @param string $name
+     * @param string $username
+     * @return void
+     */
     protected function writeSession($uid, $email, $name, $username) {
         $this->CI->session->set_userdata('_username_', $username);
         $this->CI->session->set_userdata('_name_', $name);
         $this->CI->session->set_userdata('_email_', $email);
         $this->CI->session->set_userdata('_uid_', $uid);
         $this->CI->session->set_userdata('_is_login_', TRUE);
+    }
+
+    /**
+     * 禁用用户，field可取'uid', 'username', 'email', 'tel'
+     *
+     * @param mixed $field_value
+     * @param string $field
+     * @return \Result
+     */
+    public function disableUser($field_value, $field = 'uid') {
+        $result = $this->beforeDisableUser($field_value, $field);
+        if (!$result->success) {
+            return $result;
+        }
+
+        $this->doDisableUser($result);
+        if (!$result->success) {
+            return $result;
+        }
+
+        $this->afterDisableUser($result);
+        return $result;
+    }
+
+    /**
+     * 禁用用户前参数检查
+     *
+     * @param mixed $field_value
+     * @param string $field
+     * @return \Result
+     */
+    private function beforeDisableUser($field_value, $field = 'uid') {
+        $result = new \Result();
+        load_model('user');
+
+        if ($field == 'uid') {
+            if (!check_id($field_value)) {
+                $result->set_error('参数错误:uid');
+                return $result;
+            } else {
+                $user = $this->CI->user->get_by_uid($field_value);
+            }
+        } elseif ($field == 'email') {
+            if (!check_email($field_value)) {
+                $result->set_error('参数错误:email');
+                return $result;
+            } else {
+                $user = $this->CI->user->get_by_email($field_value);
+            }
+        } elseif ($field == 'tel') {
+            if (!check_tel($field_value)) {
+                $result->set_error('参数错误:tel');
+                return $result;
+            } else {
+                $user = $this->CI->user->get_by_tel($field_value);
+            }
+        } elseif ($field == 'username') {
+            if (!check_username($field_value)) {
+                $result->set_error('参数错误:username');
+                return $result;
+            } else {
+                $user = $this->CI->user->get_by_username($field_value);
+            }
+        } else {
+            $result->set_error('参数错误:field');
+            return $result;
+        }
+
+        if (empty($user)) {
+            $result->set_error('用户不存在');
+            return $result;
+        } elseif (isset($user->status) && in_array($user->status, [self::USER_STATUS_DISABLE, self::USER_STATUS_DELETE])) {
+            $result->set_error('用户已被禁用或已被删除');
+            return $result;
+        }
+
+        $result->uid = $user->id;
+        $result->set_success();
+        return $result;
+    }
+
+    /**
+     * 禁用用户
+     *
+     * @param \Result $result
+     * @return \Result
+     */
+    private function doDisableUser(&$result) {
+        $uid = $result->uid;
+
+        $disable_result = $this->CI->user->update_by_uid($uid, ['status' => self::USER_STATUS_DISABLE]);
+        if (empty($disable_result)) {
+            $result->set_error('禁用失败');
+            return $result;
+        }
+
+        $result->set_success('禁用成功');
+        return $result;
+    }
+
+    /**
+     * after disable user
+     *
+     * @param \Result $result
+     * @return \Result
+     */
+    private function afterDisableUser(&$result) {
+        // 暂时啥也不做
+        return $result;
     }
 }

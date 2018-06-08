@@ -1,21 +1,11 @@
 <?php
 
-class DKM_Model extends CI_Model {
+abstract class DKM_Model extends CI_Model {
 
     // 子类需要声明
     protected $table_name = NULL;
 
     public function execute($statement, $binds = NULL) {
-        $parse_sql = trim($statement);
-        if (stripos($parse_sql, 'update') === 0) {
-            preg_match('/^update\s+(.+?)\s+/i', $parse_sql, $match);
-        } else if (stripos($parse_sql, 'insert') === 0) {
-            preg_match('/^insert\s+into\s+(.+?)\s+/i', $parse_sql, $match);
-        } else if (stripos($parse_sql, 'delete') === 0) {
-            preg_match('/^delete\s+from\s+(.+?)\s+/i', $parse_sql, $match);
-        }
-        $table_name = isset($match[1]) ? trim($match[1], '`') : NULL;
-
         if (empty($binds)) {
             return $this->db->query($statement);
         } else {
@@ -23,24 +13,24 @@ class DKM_Model extends CI_Model {
         }
     }
 
-    public function query($table_name, $query_array, $where_array) {
-        return $this->db->select($query_array)->from($table_name)->where($where_array)->get();
+    public function query($query_array, $where_array) {
+        return $this->db->select($query_array)->from($this->table_name)->where($where_array)->get();
     }
 
-    public function update($table_name, $field_array, $where_array) {
-        return $this->db->update($table_name, $field_array, $where_array);
+    public function update($field_array, $where_array) {
+        return $this->db->update($this->table_name, $field_array, $where_array);
     }
 
-    public function update_batch($table_name, $field_array, $index) {
-        return $this->db->update_batch($table_name, $field_array, $index);
+    public function update_batch($field_array, $index) {
+        return $this->db->update_batch($this->table_name, $field_array, $index);
     }
 
-    public function insert_batch($table_name, $field_array) {
-        return $this->db->insert_batch($table_name, $field_array);
+    public function insert_batch($field_array) {
+        return $this->db->insert_batch($this->table_name, $field_array);
     }
 
-    public function insert($table_name, $data_array) {
-        return $this->db->insert($table_name, $data_array);
+    public function insert($data_array) {
+        return $this->db->insert($this->table_name, $data_array);
     }
 
     public function insert_id() {
@@ -63,6 +53,18 @@ class DKM_Model extends CI_Model {
             return FALSE;
         }
         return $this->db->from($this->table_name)->where_in($field, $ids)->get()->result();
+    }
+
+    public function update_by_id($id, $field_array, $gmt_update = TRUE) {
+        if (empty($field_array) || !is_array($field_array)) {
+            return FALSE;
+        }
+        if (!isset($field_array['gmt_update']) && $gmt_update == TRUE) {
+            $field_array['gmt_update'] = time();
+        }
+        $this->update($field_array, ['id' => $id]);
+
+        return $this->affected_rows();
     }
 
     final public function safe_count_by_where(MixedQueryCondition $qc) {
