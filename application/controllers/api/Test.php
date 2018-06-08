@@ -24,7 +24,13 @@ class Test extends API_Controller {
 
     public function index_delete() {
         $result = new Result();
-        $result->set_success('test/index_deletes');
+        $result->set_success('test/index_delete');
+        $this->response($result);
+    }
+
+    public function index_patch() {
+        $result = new Result();
+        $result->set_success('test/index_patch');
         $this->response($result);
     }
 }
