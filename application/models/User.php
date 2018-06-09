@@ -119,7 +119,7 @@ class User extends \DKM_Model {
             'gmt_update' => $now
         ];
 
-        $this->insert($this->table_name, $data_array);
+        $this->insert($data_array);
         $affected_rows = $this->affected_rows();
         if (!$affected_rows) {
             return FALSE;

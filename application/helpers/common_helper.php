@@ -194,7 +194,7 @@ function result_to_complex_map($result, $field = 'id') {
  * @return boolean
  */
 function check_username($username) {
-    $pattern = '/^[\w\_\.]{6,20}$/u';
+    $pattern = '/^[\w\_\.]{3,20}$/u';
     if (!preg_match($pattern, $username)) {
         return FALSE;
     }
