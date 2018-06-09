@@ -8,7 +8,7 @@ use dkm\libraries\service\UserService;
  *
  * @property string $name
  */
-class User extends \DKM_Model {
+class User_model extends \DKM_Model {
 
     protected $table_name = 'user';
 

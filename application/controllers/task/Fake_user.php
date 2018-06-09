@@ -9,7 +9,7 @@ class Fake_user extends Task_base {
         $userService = UserService::get_instance();
         $faker = Factory::create('zh_CN');
 
-        for ($i = 1; $i < 100000; $i++) {
+        for ($i = 1; $i < 500; $i++) {
             $name = $faker->name;
             $email = $faker->email;
             $username = $faker->userName;

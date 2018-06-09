@@ -248,6 +248,63 @@ class UserService extends BaseService {
      */
     private function beforeDisableUser($field_value, $field = 'uid') {
         $result = new \Result();
+
+        $get_user_result = $this->getUser($field_value, $field);
+        if (!$get_user_result->success) {
+            $result->set_error($get_user_result->message);
+            return $result;
+        }
+
+        $user = $get_user_result->user;
+        if (isset($user->status) && in_array($user->status, [self::USER_STATUS_DISABLE, self::USER_STATUS_DELETE])) {
+            $result->set_error('用户已被禁用或已被删除');
+            return $result;
+        }
+
+        $result->uid = $user->id;
+        $result->set_success('禁用成功');
+        return $result;
+    }
+
+    /**
+     * 禁用用户
+     *
+     * @param \Result $result
+     * @return \Result
+     */
+    private function doDisableUser(&$result) {
+        $uid = $result->uid;
+
+        $disable_result = $this->CI->user->update_by_uid($uid, ['status' => self::USER_STATUS_DISABLE]);
+        if (empty($disable_result)) {
+            $result->set_error('禁用失败');
+            return $result;
+        }
+
+        $result->set_success('禁用成功');
+        return $result;
+    }
+
+    /**
+     * after disable user
+     *
+     * @param \Result $result
+     * @return \Result
+     */
+    private function afterDisableUser(&$result) {
+        // 暂时啥也不做
+        return $result;
+    }
+
+    /**
+     * get user by uid or email or username or tel
+     *
+     * @param $field_value
+     * @param string $field
+     * @return \Result
+     */
+    public function getUser($field_value, $field = 'uid') {
+        $result = new \Result();
         load_model('user');
 
         if ($field == 'uid') {
@@ -286,43 +343,10 @@ class UserService extends BaseService {
         if (empty($user)) {
             $result->set_error('用户不存在');
             return $result;
-        } elseif (isset($user->status) && in_array($user->status, [self::USER_STATUS_DISABLE, self::USER_STATUS_DELETE])) {
-            $result->set_error('用户已被禁用或已被删除');
-            return $result;
         }
 
-        $result->uid = $user->id;
-        $result->set_success();
-        return $result;
-    }
-
-    /**
-     * 禁用用户
-     *
-     * @param \Result $result
-     * @return \Result
-     */
-    private function doDisableUser(&$result) {
-        $uid = $result->uid;
-
-        $disable_result = $this->CI->user->update_by_uid($uid, ['status' => self::USER_STATUS_DISABLE]);
-        if (empty($disable_result)) {
-            $result->set_error('禁用失败');
-            return $result;
-        }
-
-        $result->set_success('禁用成功');
-        return $result;
-    }
-
-    /**
-     * after disable user
-     *
-     * @param \Result $result
-     * @return \Result
-     */
-    private function afterDisableUser(&$result) {
-        // 暂时啥也不做
+        $result->set_success('获取成功');
+        $result->user = $user;
         return $result;
     }
 }

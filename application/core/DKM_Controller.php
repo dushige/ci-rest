@@ -25,7 +25,7 @@
  * @property CI_User_agent                $agent
  * @property CI_Xmlrpc                    $xmlrpc
  * @property CI_Zip                       $zip
- * @property \dkm\models\User             $user
+ * @property \dkm\models\User_model       $user
  */
 abstract class DKM_Controller extends CI_Controller {
     public function __construct() {
