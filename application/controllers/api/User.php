@@ -35,4 +35,20 @@ class User extends API_Controller {
         $response->uid = $disable_result->uid;
         $this->response($response);
     }
+
+    public function delete_get() {
+        $response = new Result();
+        $field = $this->get('field');
+        $field_value = $this->get('field_value');
+        $userService = UserService::get_instance();
+        $disable_result = $userService->deleteUser($field_value, $field);
+        if (!$disable_result->success) {
+            $response->set_error($disable_result->message);
+            $this->response($response);
+        }
+
+        $response->set_success($disable_result->message);
+        $response->uid = $disable_result->uid;
+        $this->response($response);
+    }
 }

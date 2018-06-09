@@ -246,7 +246,7 @@ class UserService extends BaseService {
      * @param string $field
      * @return \Result
      */
-    private function beforeDisableUser($field_value, $field = 'uid') {
+    private function beforeDisableUser($field_value, $field) {
         $result = new \Result();
 
         $get_user_result = $this->getUser($field_value, $field);
@@ -293,6 +293,81 @@ class UserService extends BaseService {
      */
     private function afterDisableUser(&$result) {
         // 暂时啥也不做
+        return $result;
+    }
+
+    /**
+     * 删除用户
+     * @param $field_value
+     * @param string $field
+     * @return \Result
+     */
+    public function deleteUser($field_value, $field = 'uid') {
+        $result = $this->beforeDeleteUser($field_value, $field);
+        if (!$result->success) {
+            return $result;
+        }
+
+        $this->doDeleteUser($result);
+        if (!$result->success) {
+            return $result;
+        }
+
+        $this->afterDeleteUser($result);
+        return $result;
+    }
+
+    /**
+     * 删除用户前检查
+     * @param $field_value
+     * @param $field
+     * @return \Result
+     */
+    private function beforeDeleteUser($field_value, $field) {
+        $result = new \Result();
+
+        $get_user_result = $this->getUser($field_value, $field);
+        if (!$get_user_result->success) {
+            $result->set_error($get_user_result->message);
+            return $result;
+        }
+
+        $user = $get_user_result->user;
+        if (isset($user->status) && in_array($user->status, [self::USER_STATUS_DELETE])) {
+            $result->set_error('用户已被删除');
+            return $result;
+        }
+
+        $result->uid = $user->id;
+        $result->set_success('删除成功');
+        return $result;
+    }
+
+    /**
+     * 删除用户操作
+     * @param \Result $result
+     * @return \Result
+     */
+    private function doDeleteUser(&$result) {
+        $uid = $result->uid;
+
+        $disable_result = $this->CI->user->update_by_uid($uid, ['status' => self::USER_STATUS_DELETE, 'gmt_delete' => time()]);
+        if (empty($disable_result)) {
+            $result->set_error('删除失败');
+            return $result;
+        }
+
+        $result->set_success('删除成功');
+        return $result;
+    }
+
+    /**
+     * 删除用户之后
+     * @param \Result $result
+     * @return \Result
+     */
+    private function afterDeleteUser(&$result) {
+        // 暂时不做啥
         return $result;
     }
 
