@@ -188,4 +188,30 @@ class ImgService extends BaseService {
         // 暂时不做啥
         return $result;
     }
+
+    /**
+     * 获取图片信息
+     *
+     * @param $img_id
+     * @return \Result
+     */
+    public function getImgById($img_id) {
+        $result = new \Result();
+
+        if (!check_id($img_id)) {
+            $result->set_error('参数错误:img_id');
+            return $result;
+        }
+
+        load_model('img');
+        $img = $this->CI->img->get_by_id($img_id);
+        if (empty($img)) {
+            $result->set_error('图片不存在');
+            return $result;
+        }
+
+        $result->img = $img;
+        $result->set_success('获取成功');
+        return $result;
+    }
 }

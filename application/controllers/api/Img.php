@@ -37,4 +37,20 @@ class Img extends API_Controller {
         $response->set_success('删除成功');
         $this->response($response);
     }
+
+    public function get_get() {
+        $response = new Result();
+        $img_id = $this->get('img_id');
+
+        $imgService = ImgService::get_instance();
+        $get_result = $imgService->getImgById($img_id);
+        if (!$get_result->success) {
+            $response->set_error($get_result->message);
+            $this->response($response);
+        }
+
+        $response->img = $get_result->img;
+        $response->set_success($get_result->message);
+        $this->response($response);
+    }
 }
