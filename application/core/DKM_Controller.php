@@ -26,6 +26,7 @@
  * @property CI_Xmlrpc                    $xmlrpc
  * @property CI_Zip                       $zip
  * @property \dkm\models\User_model       $user
+ * @property \dkm\models\Img_model        $img
  */
 abstract class DKM_Controller extends CI_Controller {
     public function __construct() {

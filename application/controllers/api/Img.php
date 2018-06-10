@@ -1,0 +1,40 @@
+<?php
+
+use dkm\libraries\API_Controller;
+use dkm\libraries\service\ImgService;
+
+class Img extends API_Controller {
+    public function add_get() {
+        $response = new Result();
+        $uid = $this->get('uid');
+        $url = $this->get('url');
+        $size = intval($this->get('size'));
+        $md5 = $this->get('md5');
+
+        $imgService = ImgService::get_instance();
+        $add_result = $imgService->addImg($uid, $url, $size, $md5);
+        if (!$add_result->success) {
+            $response->set_error($add_result->message);
+            $this->response($response);
+        }
+
+        $response->img_id = $add_result->img_id;
+        $response->set_success($add_result->message);
+        $this->response($response);
+    }
+
+    public function delete_get() {
+        $response = new Result();
+        $img_id = $this->get('img_id');
+
+        $imgService = ImgService::get_instance();
+        $delete_result = $imgService->deleteImg($img_id);
+        if (!$delete_result->success) {
+            $response->set_error($delete_result->message);
+            $this->response($response);
+        }
+
+        $response->set_success('删除成功');
+        $this->response($response);
+    }
+}

@@ -256,3 +256,48 @@ function check_tel($tel) {
     }
     return TRUE;
 }
+
+/**
+ * 检查url格式
+ *
+ * @param string $url
+ * @return boolean
+ */
+function check_url($url) {
+    $pattern = "/^((https|http|ftp|rtsp|mms)?\:\/\/)?(([0-9a-z_!~*'().&=+$%-]+\: )?[0-9a-z_!~*'().&=+$%-]+@)?(([0-9]{1,3}\\.){3}[0-9]{1,3}|([0-9a-z_!~*'()-]+\\.)*([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\\.[a-z]{2,6})(\:[0-9]{1,4})?((\/?)|(\/[0-9a-z_!~*'().;?\:@&=+$,%#-]+)+\/?)$/";
+    if (!preg_match($pattern, $url)) {
+        return FALSE;
+    }
+    return TRUE;
+}
+
+/**
+ * 检查md5格式
+ *
+ * @param $md5
+ * @return boolean
+ */
+function check_md5($md5) {
+    $pattern = '/^([a-fA-F0-9]{32})$/';
+    if (!preg_match($pattern, $md5)) {
+        return FALSE;
+    }
+    return TRUE;
+}
+
+/**
+ * 检查图片大小，最大20M
+ *
+ * @param $size
+ * @return boolean
+ */
+function check_img_size($size) {
+    if (!is_int($size)) {
+        return FALSE;
+    }
+    if ($size > 20 * 1024 * 1024) {
+        return FALSE;
+    }
+
+    return TRUE;
+}

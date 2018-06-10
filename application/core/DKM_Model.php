@@ -55,12 +55,15 @@ abstract class DKM_Model extends CI_Model {
         return $this->db->from($this->table_name)->where_in($field, $ids)->get()->result();
     }
 
-    public function update_by_id($id, $field_array, $gmt_update = TRUE) {
+    public function update_by_id($id, $field_array, $gmt_update = TRUE, $gmt_delete = FALSE) {
         if (empty($field_array) || !is_array($field_array)) {
             return FALSE;
         }
         if (!isset($field_array['gmt_update']) && $gmt_update == TRUE) {
             $field_array['gmt_update'] = time();
+        }
+        if (!isset($field_array['gmt_delete']) && $gmt_delete == TRUE) {
+            $field_array['gmt_delete'] = time();
         }
         $this->update($field_array, ['id' => $id]);
 
