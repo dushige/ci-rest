@@ -16,7 +16,7 @@ class Fake_img extends Task_base {
             $md5 = $factory->md5;
             $add_result = $imgService->addImg($uid, $url, $size, $md5);
             if (!$add_result->success) {
-                daemon_log_info("fail      |uid: $uid, url: $url, size: $size, md5: $md5");
+                daemon_log_info("fail $add_result->message |uid: $uid, url: $url, size: $size, md5: $md5");
             } else {
                 daemon_log_info("success   |uid: $uid, url: $url, size: $size, md5: $md5");
             }
