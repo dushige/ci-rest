@@ -7,11 +7,16 @@ class DKM_Autologin_hook {
             ['api', 'login'],
             ['api', 'regist'],
             ['api', 'test'],
+            ['api', 'user'],
+            ['api', 'img'],
             ['task']
         ];
 
         $CI = &get_instance();
-        for ($i = 0; $i <= count($CI->uri->segments); $i++) {
+        if (empty($CI->uri->segments) == 0 && in_array([], $no_login)) {
+            return;
+        }
+        for ($i = 1; $i <= count($CI->uri->segments); $i++) {
             $req_segment_arr = array_slice($CI->uri->segments, 0, $i);
             if (in_array($req_segment_arr, $no_login)) {
                 return;
