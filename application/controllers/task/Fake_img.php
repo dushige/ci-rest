@@ -12,7 +12,7 @@ class Fake_img extends Task_base {
         for ($i = 1; $i < 500; $i++) {
             $uid = mt_rand(1, 400);
             $url = $factory->imageUrl();
-            $size = mt_rand(2591, 21534144);
+            $size = mt_rand(2591, 20971520);
             $md5 = $factory->md5;
             $add_result = $imgService->addImg($uid, $url, $size, $md5);
             if (!$add_result->success) {
