@@ -13,7 +13,7 @@ class DKM_Autologin_hook {
         ];
 
         $CI = &get_instance();
-        if (empty($CI->uri->segments) == 0 && in_array([], $no_login)) {
+        if (empty($CI->uri->segments) && in_array([], $no_login)) {
             return;
         }
         for ($i = 1; $i <= count($CI->uri->segments); $i++) {
