@@ -25,6 +25,7 @@
  * @property CI_User_agent                $agent
  * @property CI_Xmlrpc                    $xmlrpc
  * @property CI_Zip                       $zip
+ * @property CI_Loader                    $load
  * @property \dkm\models\User_model       $user
  * @property \dkm\models\Img_model        $img
  */

@@ -48,6 +48,29 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @category	Libraries
  * @author		EllisLab Dev Team
  * @link		https://codeigniter.com/user_guide/general/controllers.html
+ * @property CI_Config                    $config
+ * @property CI_Router                    $router
+ * @property CI_Input                     $input
+ * @property CI_Calendar                  $calendar
+ * @property CI_Encrypt                   $encrypt
+ * @property CI_Encryption                $encryption
+ * @property CI_Ftp                       $ftp
+ * @property CI_Hooks                     $hooks
+ * @property CI_Image_lib                 $image_lib
+ * @property CI_Log                       $log
+ * @property CI_Output                    $output
+ * @property CI_Pagination                $pagination
+ * @property CI_Parser                    $parser
+ * @property CI_Session                   $session
+ * @property CI_Table                     $table
+ * @property CI_Trackback                 $trackback
+ * @property CI_Unit_test                 $unit
+ * @property CI_Upload                    $upload
+ * @property CI_URI                       $uri
+ * @property CI_User_agent                $agent
+ * @property CI_Xmlrpc                    $xmlrpc
+ * @property CI_Zip                       $zip
+ * @property CI_Loader                    $load
  */
 class CI_Controller {
 
