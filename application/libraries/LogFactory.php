@@ -56,33 +56,26 @@ class LogFactory {
         self::LEVEL_EMERGENCY => 'EMERGENCY',
     ];
 
-    public static $app_path = '';
-
     private static $logger_map = NULL;
 
     private static $log_config = NULL;
 
-    public function __construct() {
-        self::$app_path = realpath(dirname(__FILE__) . '/..') . '/';
-    }
-
     /**
-     * get handler
-     *
      * @param $log_handler
      * @param $name
      * @param $log_path
+     * @param $log_extension
      * @param $level
      * @return StreamHandler
      */
-    private static function getHandler($log_handler, $name, $log_path, $level) {
+    private static function getHandler($log_handler, $name, $log_path, $log_extension, $level) {
         if ($log_handler == self::HANDLER_STREAM) {
-            $log_file = $log_path . "$name-$level.log";
+            $log_file = $log_path . "$name-" . strtolower(self::$LEVEL_MAP[$level]) . $log_extension;
             return new StreamHandler($log_file, $level);
         }
 
         // 默认是StreamHandler
-        $log_file = $log_path . "$name-$level.log";
+        $log_file = $log_path . "$name-" . strtolower(self::$LEVEL_MAP[$level]) . $log_extension;
         return new StreamHandler($log_file, $level);
     }
 
@@ -121,19 +114,22 @@ class LogFactory {
             return self::$logger_map[$name];
         }
 
-        self::loadConfig();
+        if (empty(self::$log_config)) {
+            self::loadConfig();
+        }
 
         $log_path = self::configItem('log_path');
         $log_handlers = self::configItem('log_handlers');
         $log_format = self::configItem('log_format');
         $log_level = self::configItem('log_level');
+        $log_extension = self::configItem('log_extension');
 
         foreach ($config as $key => $value) {
             $$key = $value;
         }
 
         if (empty($log_path)) {
-            $log_path = self::$app_path . 'logs/';
+            $log_path = APPPATH . 'logs/';
             self::$log_config['log_path'] = $log_path;
         }
 
@@ -152,10 +148,15 @@ class LogFactory {
             self::$log_config['log_level'] = $log_level;
         }
 
+        if (empty($log_extension)) {
+            $log_extension = '.log';
+            self::$log_config['log_extension'] = $log_extension;
+        }
+
         $logger = new Logger($name);
         $formatter = self::getFormatter($log_format, $name);
         foreach ($log_handlers as $log_handler) {
-            $handler = self::getHandler($log_handler, $name, $log_path, $log_level);
+            $handler = self::getHandler($log_handler, $name, $log_path, $log_extension, $log_level);
             $handler->setFormatter($formatter);
             $logger->pushHandler($handler);
         }
@@ -165,13 +166,16 @@ class LogFactory {
         return $logger;
     }
 
+    /**
+     * load config from app config or dev config
+     */
     private static function loadConfig() {
         if (!empty(self::$log_config)) {
             return;
         }
-        $config_file = self::$app_path . 'config/log.php';
-        if (file_exists(self::$app_path . '../development.lock')) {
-            $config_file = self::$app_path . 'config/development/log.php';
+        $config_file = APPPATH . 'config/log.php';
+        if (file_exists(APPPATH . '../development.lock')) {
+            $config_file = APPPATH . 'config/development/log.php';
         }
         if (file_exists($config_file)) {
             require($config_file);

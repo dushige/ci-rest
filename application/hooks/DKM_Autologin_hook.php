@@ -9,7 +9,8 @@ class DKM_Autologin_hook {
             ['api', 'test'],
             ['api', 'user'],
             ['api', 'img'],
-            ['task']
+            ['api', 'log'],
+            ['task'],
         ];
 
         $CI = &get_instance();
