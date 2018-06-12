@@ -7,7 +7,7 @@ $redis_dkm_hosts_arr = [
 $dkm['hosts'] = [];
 $dkm['hosts'] = $redis_dkm_hosts_arr;
 $dkm['password'] = '3dfe1d0dd78234d1d00d9baf511473a2';
-$dkm['timeout'] = 1;
-$dkm['read_timeout'] = 1;
+$dkm['timeout'] = 3;
+$dkm['read_timeout'] = 3;
 
 $config['redis_dkm'] = $dkm;

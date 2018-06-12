@@ -70,12 +70,12 @@ class LogFactory {
      */
     private static function getHandler($log_handler, $name, $log_path, $log_extension, $level) {
         if ($log_handler == self::HANDLER_STREAM) {
-            $log_file = $log_path . "$name-" . strtolower(self::$LEVEL_MAP[$level]) . $log_extension;
+            $log_file = $log_path . $name . $log_extension;
             return new StreamHandler($log_file, $level);
         }
 
         // 默认是StreamHandler
-        $log_file = $log_path . "$name-" . strtolower(self::$LEVEL_MAP[$level]) . $log_extension;
+        $log_file = $log_path . $name . $log_extension;
         return new StreamHandler($log_file, $level);
     }
 

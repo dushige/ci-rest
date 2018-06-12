@@ -5,7 +5,7 @@
  * @param mixed $lib
  * @param string $object_name
  * @param array $params
- * @return CI_Loader
+ * @return Object
  */
 function load_lib($lib, $object_name = NULL, $params = NULL) {
     $CI = &get_instance();
@@ -16,8 +16,8 @@ function load_lib($lib, $object_name = NULL, $params = NULL) {
  * 加载model
  *
  * @param mixed $model
- * @param string $param_name
- * @return CI_Loader
+ * @param string $name
+ * @return Object
  */
 function load_model($model, $name = NULL) {
     $CI = &get_instance();
@@ -28,7 +28,7 @@ function load_model($model, $name = NULL) {
  * 加载helper
  *
  * @param mixed $helpers
- * @return CI_Loader
+ * @return Object
  */
 function load_helper($helpers) {
     $CI = &get_instance();

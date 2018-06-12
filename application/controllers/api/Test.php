@@ -1,11 +1,14 @@
 <?php
 
 use dkm\libraries\API_Controller;
+use dkm\libraries\RedisFactory;
 
 class Test extends API_Controller {
     public function index_get() {
         $result = new Result();
-        $result->set_success('test/index_get');
+        $redis_client = RedisFactory::get_dkm_redis_client();
+        $value = $redis_client->get('test_key');
+        $result->set_success($value);
         $this->response($result);
     }
 
