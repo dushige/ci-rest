@@ -55,11 +55,10 @@ class CI_Cache_redis extends CI_Driver
 	 * @var	array
 	 */
 	protected static $_default_config = array(
-		'socket_type' => 'tcp',
-		'host' => '127.0.0.1',
-		'password' => NULL,
-		'port' => 6379,
-		'timeout' => 0
+		'hosts' => ['127.0.0.1:6379'],
+		'password' => '3dfe1d0dd78234d1d00d9baf511473a2',
+		'timeout' => 0,
+        'read_timeout' => 0,
 	);
 
 	/**
@@ -68,6 +67,13 @@ class CI_Cache_redis extends CI_Driver
 	 * @var	Redis
 	 */
 	protected $_redis;
+
+    /**
+     * CI
+     *
+     * @var CI_Controller
+     */
+	protected $_ci;
 
 	/**
 	 * An internal cache for storing keys of serialized values.
@@ -86,22 +92,23 @@ class CI_Cache_redis extends CI_Driver
 	 * Loads Redis config file if present. Will halt execution
 	 * if a Redis connection can't be established.
 	 *
+     * @param $group_name
 	 * @return	void
+     * @throws Exception
 	 * @see		Redis::connect()
 	 */
-	public function __construct()
+	public function __construct($group_name)
 	{
-		if ( ! $this->is_supported())
-		{
-			log_message('error', 'Cache: Failed to create Redis object; extension not loaded?');
-			return;
-		}
+		$this->_ci =& get_instance();
 
-		$CI =& get_instance();
-
-		if ($CI->config->load('redis', TRUE, TRUE))
+		if ($this->_ci->config->load('redis', TRUE, TRUE))
 		{
-			$config = array_merge(self::$_default_config, $CI->config->item('redis'));
+			$config = $this->_ci->config->item('redis_' . $group_name);
+			if (empty($config) || !is_array($config))
+            {
+                log_message('error', 'Cache: Redis config is empty, group_name:' . $group_name);
+                throw new Exception('无效的配置:redis_' . $group_name);
+            }
 		}
 		else
 		{
@@ -112,14 +119,7 @@ class CI_Cache_redis extends CI_Driver
 
 		try
 		{
-			if ($config['socket_type'] === 'unix')
-			{
-				$success = $this->_redis->connect($config['socket']);
-			}
-			else // tcp socket
-			{
-				$success = $this->_redis->connect($config['host'], $config['port'], $config['timeout']);
-			}
+		    $success = $this->_redis->connect($config['host'], $config['port'], $config['timeout']);
 
 			if ( ! $success)
 			{
@@ -140,6 +140,55 @@ class CI_Cache_redis extends CI_Driver
 		$serialized = $this->_redis->sMembers('_ci_redis_serialized');
 		empty($serialized) OR $this->_serialized = array_flip($serialized);
 	}
+
+    // ------------------------------------------------------------------------
+
+    /**
+     * connect to redis cluster
+     * @param $config
+     */
+    private function connect($config)
+    {
+        if (empty($config['hosts']) || !is_array($config['hosts']))
+        {
+            return FALSE;
+        }
+
+        $hosts = $config['hosts'];
+        $timeout = isset($config['timeout']) ? $config['timeout'] : 1;
+        $read_timeout = isset($config['read_timeout']) ? $config['read_timeout'] : 1;
+
+        // choose a node ramdomly
+        shuffle($hosts);
+
+        try
+        {
+            if (count($hosts) == 1) {
+                $redis = new Redis();
+                list($host, $port) = explode(':', $hosts[0]);
+                $redis->connect($host, $port, $config['timeout']);
+                $redis->auth($config['password']);
+            } else {
+                $redis = new RedisCluster(NULL, $hosts, $timeout, $read_timeout);
+            }
+        }
+        catch (Exception $e)
+        {
+            // TODO log error
+            return FALSE;
+        }
+
+        if (empty($redis)) {
+            return FALSE;
+        }
+
+        // TODO
+        $this->_redis = $redis;
+        $this->_redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_IGBINARY);
+        $this->_redis->setOption(RedisCluster::OPT_SLAVE_FAILOVER, RedisCluster::REDIS_FAILOVER_DISTRIBUTE);
+
+        return TRUE;
+    }
 
 	// ------------------------------------------------------------------------
 
@@ -295,18 +344,6 @@ class CI_Cache_redis extends CI_Driver
 		}
 
 		return FALSE;
-	}
-
-	// ------------------------------------------------------------------------
-
-	/**
-	 * Check if Redis driver is supported
-	 *
-	 * @return	bool
-	 */
-	public function is_supported()
-	{
-		return extension_loaded('redis');
 	}
 
 	// ------------------------------------------------------------------------
