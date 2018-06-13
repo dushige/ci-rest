@@ -8,11 +8,6 @@ class Cache_memcached {
     protected $region;
 
     /**
-     * @var array
-     */
-    protected $local_cache = [];
-
-    /**
      * @var CI_Controller
      */
     protected $ci;
@@ -95,10 +90,6 @@ class Cache_memcached {
     public function get($key) {
         $key = $this->genKeyName($key);
         if ($this->m) {
-            if (isset($this->local_cache[$key])) {
-                return $this->local_cache[$key];
-            }
-
             try {
                 return @$this->m->get($key);
             } catch (Exception $e) {
@@ -112,16 +103,8 @@ class Cache_memcached {
         $key = $this->genKeyName($key);
 
         if ($this->m) {
-            if (isset($this->local_cache[$key])) {
-                return $this->local_cache[$key];
-            }
-
             try {
-                $result = @$this->m->add($key, $value, $expiration);
-                if ($result) {
-                    $this->local_cache[$key] = $value;
-                }
-                return $result;
+                return @$this->m->add($key, $value, $expiration);
             } catch (Exception $e) {
                 return FALSE;
             }
@@ -130,50 +113,43 @@ class Cache_memcached {
         return FALSE;
     }
 
-    public function put($region, $key, $value, $expiration = NULL, $ignore_local_cache = FALSE) {
-        $this->connect($region);
+    public function set($key, $value, $expiration = NULL) {
+        $key = $this->genKeyName($key);
 
-        if (!isset($this->config['region']) || !key_exists($region, $this->config['region'])) {
-            return FALSE;
+        if ($this->m) {
+            try {
+                return @$this->m->set($key, $value, $expiration);
+            } catch (Exception $e) {
+                return FALSE;
+            }
         }
-        $region_conf = $this->config['region'][$region];
-        list($_region, $_expiration) = array_values($region_conf);
-        if ($expiration !== NULL) {
-            $_expiration = $expiration;
-        }
-        $genKeyName = $this->genKeyName($_region . $key);
-        if ($_expiration === NULL || !is_numeric($_expiration)) {
-            $_expiration = $this->config['config']['expiration'];
-        }
-        if ($ignore_local_cache === FALSE) {
-            $this->local_cache[$genKeyName] = $value;
-        }
-
-        return @$this->m->set($genKeyName, $value, $_expiration);
+        return FALSE;
     }
 
-    public function increment($region, $key) {
-        $this->connect($region);
+    public function increment($key, $offset = 1, $initial_value = 0, $expiration = 0) {
+        $key = $this->genKeyName($key);
 
-        if (!isset($this->config['region']) || !key_exists($region, $this->config['region'])) {
-            return FALSE;
+        if ($this->m) {
+            try {
+                return @$this->m->increment($key, $offset, $initial_value, $expiration);
+            } catch (Exception $e) {
+                return FALSE;
+            }
         }
-        $region_conf = $this->config['region'][$region];
-        list($_region,) = array_values($region_conf);
-
-        return @$this->m->increment($this->genKeyName($_region . $key));
+        return FALSE;
     }
 
-    public function decrement($region, $key) {
-        $this->connect($region);
+    public function decrement($key, $offset = 1, $initial_value = 0, $expiration = 0) {
+        $key = $this->genKeyName($key);
 
-        if (!isset($this->config['region']) || !key_exists($region, $this->config['region'])) {
-            return FALSE;
+        if ($this->m) {
+            try {
+                return @$this->m->decrement($key, $offset, $initial_value, $expiration);
+            } catch (Exception $e) {
+                return FALSE;
+            }
         }
-        $region_conf = $this->config['region'][$region];
-        list($_region, ) = array_values($region_conf);
-
-        return @$this->m->decrement($this->genKeyName($_region . $key));
+        return FALSE;
     }
 
     /*
@@ -183,27 +159,17 @@ class Cache_memcached {
         @param return : none
     +-------------------------------------+
     */
-    public function delete($region, $key, $expiration = NULL) {
-        $this->connect($region);
+    public function delete($key, $time = 0) {
+        $key = $this->genKeyName($key);
 
-        if (is_null($key)) {
-            $this->errors[] = 'The key value cannot be NULL';
-            return FALSE;
-        }
-
-        if (is_null($expiration)) {
-            $expiration = $this->config['config']['delete_expiration'];
-        }
-
-        if (is_array($key)) {
-            foreach ($key as $multi) {
-                $this->delete($region, $multi, $expiration);
+        if ($this->m) {
+            try {
+                return @$this->m->delete($key, $time);
+            } catch (Exception $e) {
+                return FALSE;
             }
-        } else {
-            $region_conf = $this->config['region'][$region];
-            unset($this->local_cache[$this->genKeyName($region_conf['region'] . $key)]);
-            return @$this->m->delete($this->genKeyName($region_conf['region'] . $key), $expiration);
         }
+        return FALSE;
     }
 
     /**
