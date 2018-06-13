@@ -85,10 +85,10 @@ class Cache_redis
 		$this->_ci =& get_instance();
 
         $group_name = $group['group_name'];
-		if ($this->_ci->config->load('redis', FALSE, TRUE)) {
-			$config = $this->_ci->config->item('redis_' . $group_name);
+		if ($this->_ci->config->load('redis', TRUE, TRUE)) {
+			$config = $this->_ci->config->item('redis')[$group_name];
 			if (empty($config) || !is_array($config)) {
-                throw new Exception('无效的配置:redis_' . $group_name);
+                throw new Exception("无效的配置:redis['$group_name']'");
             }
 		}
 

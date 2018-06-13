@@ -10,4 +10,4 @@ $dkm['password'] = '3dfe1d0dd78234d1d00d9baf511473a2';
 $dkm['timeout'] = 1;
 $dkm['read_timeout'] = 1;
 
-$config['redis_dkm'] = $dkm;
+$config['dkm'] = $dkm;
