@@ -1,5 +1,8 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+/**
+ * Class Cache_memcached
+ */
 class Cache_memcached {
 
     /**
@@ -11,11 +14,6 @@ class Cache_memcached {
      * @var CI_Controller
      */
     protected $ci;
-
-    /**
-     * @var array
-     */
-    protected $errors = [];
 
     /**
      * current memcached instance
@@ -31,17 +29,21 @@ class Cache_memcached {
 
     /**
      * Cache_memcached constructor.
-     * @param $region
+     * @param array $region
      * @throws Exception
      */
-    public function __construct($region) {
-        $this->region = $region;
+    public function __construct(array $region) {
+        if (!isset($region['region'])) {
+            throw new Exception('无效的参数');
+        }
+
         $this->ci =& get_instance();
         if ($this->ci->load->config('memcached', TRUE, TRUE)) {
-            $config = $this->ci->config->item('memcached')[$region];
+            $config = $this->ci->config->item('memcached')[$region['region']];
             if (empty($config) || !is_array($config)) {
                 throw new Exception("无效的配置:memcached['$region']'");
             }
+            $this->region = $region['region'];
         }
 
         if (!$this->connect($config)) {
@@ -87,6 +89,10 @@ class Cache_memcached {
         return TRUE;
     }
 
+    /**
+     * @param $key
+     * @return bool|mixed
+     */
     public function get($key) {
         $key = $this->genKeyName($key);
         if ($this->m) {
@@ -99,6 +105,12 @@ class Cache_memcached {
         return FALSE;
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @param null $expiration
+     * @return bool
+     */
     public function add($key, $value, $expiration = NULL) {
         $key = $this->genKeyName($key);
 
@@ -113,6 +125,12 @@ class Cache_memcached {
         return FALSE;
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @param null $expiration
+     * @return bool
+     */
     public function set($key, $value, $expiration = NULL) {
         $key = $this->genKeyName($key);
 
@@ -126,7 +144,14 @@ class Cache_memcached {
         return FALSE;
     }
 
-    public function increment($key, $offset = 1, $initial_value = 0, $expiration = 0) {
+    /**
+     * @param $key
+     * @param int $offset
+     * @param int $initial_value
+     * @param int $expiration
+     * @return bool|int
+     */
+    public function incr($key, $offset = 1, $initial_value = 0, $expiration = 0) {
         $key = $this->genKeyName($key);
 
         if ($this->m) {
@@ -139,7 +164,14 @@ class Cache_memcached {
         return FALSE;
     }
 
-    public function decrement($key, $offset = 1, $initial_value = 0, $expiration = 0) {
+    /**
+     * @param $key
+     * @param int $offset
+     * @param int $initial_value
+     * @param int $expiration
+     * @return bool|int
+     */
+    public function decr($key, $offset = 1, $initial_value = 0, $expiration = 0) {
         $key = $this->genKeyName($key);
 
         if ($this->m) {
@@ -152,13 +184,11 @@ class Cache_memcached {
         return FALSE;
     }
 
-    /*
-    +-------------------------------------+
-        Name: delete
-        Purpose: deletes a single or multiple data elements from the memached servers
-        @param return : none
-    +-------------------------------------+
-    */
+    /**
+     * @param $key
+     * @param int $time
+     * @return bool
+     */
     public function delete($key, $time = 0) {
         $key = $this->genKeyName($key);
 
@@ -173,147 +203,102 @@ class Cache_memcached {
     }
 
     /**
-     * 此方法用于一次获取多个key，用之前请细看每行代码，key的数量请自己保证，建议不超过30
-     * @param $region
-     * @param null $keys array('key1', 'key2')
-     * @return array $ret_arr = [
-     *                  'in_cache' => [],
-     *                  'no_cache' => $keys
-     *               ];
+     * @param $keys
+     * @return array|bool|mixed
      */
-    public function getMulti($region, $keys = NULL) {
-        $ret_arr = [
-            'in_cache' => [],
-            'no_cache' => $keys
-        ];
-
-        $this->connect($region);
-
-        if (empty($region) || !key_exists($region, $this->config['region'])) {
-            $this->errors[] = 'Undefined region';
-            return $ret_arr;
-        }
-
-        if (!$this->m || !method_exists($this->m, 'getMulti') || empty($keys) || !is_array($keys)) {
-            return $ret_arr;
-        }
-        $region_conf = $this->config['region'][$region];
-        $mc_keys = [];
-        foreach ($keys as $_key) {
-            if (is_null($_key)) {
-                $this->errors[] = 'The key value cannot be NULL';
-                return $ret_arr;
-            }
-
-            $mc_keys[$_key] = $this->genKeyName($region_conf['region'] . $_key);
-        }
-        $mc_values = [];
-        if (!empty($mc_keys)) {
-            $mc_values = $this->m->getMulti($mc_keys);
-        }
-
-        if (empty($mc_values)) {
-            return $ret_arr;
-        } else {
-            $ret_arr['no_cache'] = array_flip($ret_arr['no_cache']);
-            foreach ($mc_keys as $_key => $_value) {
-                if (isset($mc_values[$_value])) {
-                    $ret_arr['in_cache'][$_key] = $mc_values[$_value];
-                    unset($ret_arr['no_cache'][$_key]);
-                }
-            }
-            $ret_arr['no_cache'] = array_keys($ret_arr['no_cache']);
-
-            return $ret_arr;
-        }
-    }
-
-    /**
-     * 此方法用于批量向memcache中set key,用之前请细看每行代码，key的数量请自己保证，建议不超过30
-     * @param $region
-     * @param $keys array('key1' => 'value1', 'key2' => 'value2');
-     * @param null $expiration 超时，单位秒
-     * @param bool $ignore_local_cache
-     * @return bool
-     */
-    public function putMulti($region, $keys, $expiration = NULL, $ignore_local_cache = FALSE) {
-        $this->connect($region);
-
-        if (!isset($this->config['region']) || !key_exists($region, $this->config['region'])) {
+    public function getMulti($keys) {
+        if (!is_array($keys)) {
             return FALSE;
         }
 
-        $region_conf = $this->config['region'][$region];
-        list($_region, $_expiration) = array_values($region_conf);
-        if ($expiration !== NULL) {
-            $_expiration = $expiration;
-        }
-        if ($_expiration === NULL || !is_numeric($_expiration)) {
-            $_expiration = $this->config['config']['expiration'];
+        if (empty($keys)) {
+            return [];
         }
 
-        $set_keys = [];
-        foreach ($keys as $_key => $_val) {
-            $genKeyName = $this->genKeyName($_region . $_key);
-            $set_keys[$genKeyName] = $_val;
-            if ($ignore_local_cache === FALSE) {
-                $this->local_cache[$genKeyName] = $_val;
+        foreach ($keys as $k => $key) {
+            $keys[$k] = $this->genKeyName($key);
+        }
+
+        if ($this->m) {
+            try {
+                return @$this->m->getMulti($keys);
+            } catch (Exception $e) {
+                return FALSE;
+            }
+        }
+        return FALSE;
+    }
+
+    /**
+     * @param $items
+     * @param null $expiration
+     * @return array|bool
+     */
+    public function putMulti($items, $expiration = NULL) {
+        if (!is_array($items)) {
+            return FALSE;
+        }
+
+        if (empty($items)) {
+            return [];
+        }
+
+        $items_ = [];
+        foreach ($items as $key => $value) {
+            $items_[$this->genKeyName($key)] = $value;
+        }
+
+        if ($this->m) {
+            try {
+                return @$this->m->setMulti($items_, $expiration);
+            } catch (Exception $e) {
+                return FALSE;
             }
         }
 
-        try {
-            $set_result = $this->m->setMulti($set_keys, $_expiration);
-        } catch (Exception $e) {
-            $set_result = FALSE;
+        return FALSE;
+    }
+
+    /**
+     * @return bool|int
+     */
+    public function getResultCode() {
+        if ($this->m) {
+            try {
+                return @$this->m->getResultCode();
+            } catch (Exception $e) {
+                return FALSE;
+            }
         }
-
-        return $set_result;
+        return FALSE;
     }
 
-    public function get_result_code($region = NULL) {
-        $this->connect($region);
-
-        return $this->m->getResultCode();
+    /**
+     * @return array|bool
+     */
+    public function getVersion() {
+        if ($this->m) {
+            try {
+                return @$this->m->getVersion();
+            } catch (Exception $e) {
+                return FALSE;
+            }
+        }
+        return FALSE;
     }
 
-    /*
-    +-------------------------------------+
-        Name: flush
-        Purpose: flushes all items from cache
-        @param return : none
-    +-------------------------------------+
-    */
-    public function flush($region = NULL) {
-        $this->connect($region);
-
-        return @$this->m->flush();
-    }
-
-    /*
-    +-------------------------------------+
-        Name: getversion
-        Purpose: Get Server Vesion Number
-        @param Returns a string of server version number or FALSE on failure.
-    +-------------------------------------+
-    */
-    public function getversion($region = NULL) {
-        $this->connect($region);
-
-        return @$this->m->getVersion();
-    }
-
-    /*
-    +-------------------------------------+
-        Name: getstats
-        Purpose: Get Server Stats
-        Possible: "reset, malloc, maps, cachedump, slabs, items, sizes"
-        @param returns an associative array with server's statistics. Array keys correspond to stats parameters and values to parameter's values.
-    +-------------------------------------+
-    */
-    public function getstats($region = NULL) {
-        $this->connect($region);
-
-        return @$this->m->getStats();
+    /**
+     * @return array|bool
+     */
+    public function getStats() {
+        if ($this->m) {
+            try {
+                return @$this->m->getStats();
+            } catch (Exception $e) {
+                return FALSE;
+            }
+        }
+        return FALSE;
     }
 
     /**
@@ -326,8 +311,6 @@ class Cache_memcached {
             $key = json_encode($key);
         }
 
-        return strtolower($this->config['config']['prefix'] . $key);
+        return strtolower($this->region . '.' . $key);
     }
 }
-/* End of file memcached_library.php */
-/* Location: ./application/libraries/memcached_library.php */
