@@ -1,6 +1,6 @@
 <?php
 
-use dkm\libraries\Task_base;
+use dkm\libraries\base\Task_base;
 
 class Test_task extends Task_base {
     public function execute() {

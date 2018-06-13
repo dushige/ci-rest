@@ -2,8 +2,6 @@
 
 namespace dkm\libraries\util;
 
-use dkm\libraries\RedisFactory;
-
 /**
  * Class RedisLocker
  * @package dkm\libraries\util
@@ -15,7 +13,7 @@ class RedisLocker {
      * @return bool
      */
     public static function getLock($lock_name, $time_out = 60) {
-        $redis_client = RedisFactory::get_dkm_redis_client();
+        $redis_client = RedisFactory::get_dkm_client();
 
         $lock_name = self::generateLockName($lock_name);
         $ret = $redis_client->incr($lock_name);
@@ -31,7 +29,7 @@ class RedisLocker {
      * @return bool
      */
     public static function releaseLock($lock_name) {
-        $redis_client = RedisFactory::get_dkm_redis_client();
+        $redis_client = RedisFactory::get_dkm_client();
         if (!$redis_client) {
             return FALSE;
         }

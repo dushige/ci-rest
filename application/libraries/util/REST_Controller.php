@@ -1,11 +1,9 @@
 <?php
 
-namespace dkm\libraries;
+namespace dkm\libraries\util;
 
 use Exception;
 use stdClass;
-
-defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
  * CodeIgniter Rest Controller
@@ -455,7 +453,7 @@ abstract class REST_Controller extends \DKM_Controller {
         }
 
         // Load the language file
-        $this->lang->load('rest_controller', $language, FALSE, TRUE, __DIR__.'/../');
+        $this->lang->load('rest_controller', $language, FALSE, TRUE, __DIR__.'/../../');
 
         // Initialise the response, request and rest objects
         $this->request = new stdClass();

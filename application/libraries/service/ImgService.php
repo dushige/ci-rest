@@ -1,7 +1,8 @@
 <?php
 
 namespace dkm\libraries\service;
-use dkm\libraries\BaseService;
+
+use dkm\libraries\base\BaseService;
 
 /**
  * Class ImgService

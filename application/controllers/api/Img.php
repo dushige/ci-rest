@@ -1,6 +1,6 @@
 <?php
 
-use dkm\libraries\API_Controller;
+use dkm\libraries\base\API_Controller;
 use dkm\libraries\service\ImgService;
 
 class Img extends API_Controller {

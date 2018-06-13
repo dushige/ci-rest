@@ -1,6 +1,6 @@
 <?php
 
-use dkm\libraries\API_Controller;
+use dkm\libraries\base\API_Controller;
 
 class Test extends API_Controller {
     public function index_get() {

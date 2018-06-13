@@ -1,8 +1,8 @@
 <?php
-namespace dkm\libraries;
-use Exception;
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+namespace dkm\libraries\util;
+
+use Exception;
 
 /**
  * Format class

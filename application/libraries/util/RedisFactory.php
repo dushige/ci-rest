@@ -1,13 +1,13 @@
 <?php
 
-namespace dkm\libraries;
+namespace dkm\libraries\util;
 
 class RedisFactory {
 
     /**
      * @return \Cache_redis
      */
-    public static function get_dkm_redis_client() {
+    public static function get_dkm_client() {
         $CI =& get_instance();
         $object_name = 'DKMRedisClient';
 

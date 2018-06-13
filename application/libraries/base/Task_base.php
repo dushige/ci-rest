@@ -1,6 +1,6 @@
 <?php
 
-namespace dkm\libraries;
+namespace dkm\libraries\base;
 
 class Task_base extends \DKM_Controller {
 

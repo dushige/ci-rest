@@ -1,6 +1,6 @@
 <?php
 
-use dkm\libraries\Task_base;
+use dkm\libraries\base\Task_base;
 use dkm\libraries\service\UserService;
 use Faker\Factory;
 

@@ -1,6 +1,6 @@
 <?php
 
-use dkm\libraries\API_Controller;
+use dkm\libraries\base\API_Controller;
 use dkm\libraries\service\UserService;
 
 class Login extends API_Controller {

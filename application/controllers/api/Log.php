@@ -1,7 +1,7 @@
 <?php
 
-use dkm\libraries\API_Controller;
-use dkm\libraries\LogFactory;
+use dkm\libraries\base\API_Controller;
+use dkm\libraries\util\LogFactory;
 
 class Log extends API_Controller {
     public function index_get() {

@@ -1,13 +1,13 @@
 <?php
 
-namespace dkm\libraries;
+namespace dkm\libraries\util;
 
 class MemcachedFactory {
 
     /**
      * @return \Cache_memcached
      */
-    public static function get_dkm_memcached_client() {
+    public static function get_dkm_client() {
         $CI =& get_instance();
         $object_name = 'DKMMemcachedClient';
 

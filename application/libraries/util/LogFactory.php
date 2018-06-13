@@ -1,6 +1,6 @@
 <?php
 
-namespace dkm\libraries;
+namespace dkm\libraries\util;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
