@@ -148,7 +148,7 @@ class Cache_redis
         }
         catch (Exception $e) {
             if ($log_error) {
-                $logger = \dkm\libraries\LogFactory::getLogger('dkm');
+                $logger = \dkm\libraries\util\LogFactory::getLogger('dkm');
                 $logger->error('RedisConnectionError', ['error' => $e->getMessage()]);
             }
             return FALSE;

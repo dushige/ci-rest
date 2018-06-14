@@ -78,7 +78,7 @@ class Cache_memcached {
             $m->addServer($config['host'], $config['port'], $config['weight']);
         } catch (Exception $e) {
             if ($log_error) {
-                $logger = \dkm\libraries\LogFactory::getLogger('dkm');
+                $logger = \dkm\libraries\util\LogFactory::getLogger('dkm');
                 $logger->error('MemcachedConnectionError', ['error' => $e->getMessage()]);
             }
             return FALSE;

@@ -10,6 +10,8 @@ class DKM_Autologin_hook {
             ['api', 'user'],
             ['api', 'img'],
             ['api', 'log'],
+            ['api', 'memcached_test'],
+            ['api', 'redis_test'],
             ['task'],
         ];
 
