@@ -9,7 +9,7 @@ class Fake_redis extends Task_base {
         $r_client = RedisFactory::get_dkm_client();
         $faker = Factory::create();
         $expiration = 600;
-        for ($i = 1; $i < 100000; $i++) {
+        for ($i = 1; $i < 1000000; $i++) {
             $key = $faker->md5;
             $value = $faker->md5 . $faker->md5 . $faker->md5 . $faker->md5;
             $result = $r_client->setEx($key, $value, $expiration);
