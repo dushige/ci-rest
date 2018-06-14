@@ -11,12 +11,12 @@ class Memcached_test extends API_Controller {
 
         $m_client = MemcachedFactory::get_dkm_client();
         $value = $m_client->get($key);
-        if ($value) {
-            $response->set_success($value);
+        if ($value === FALSE) {
+            $response->set_error($value);
             $this->response($response);
         }
 
-        $response->set_error($value);
+        $response->set_success($value);
         $this->response($response);
     }
 
@@ -30,12 +30,12 @@ class Memcached_test extends API_Controller {
         $m_client = MemcachedFactory::get_dkm_client();
         $result = $m_client->set($key, $value ,$expire);
 
-        if ($result) {
-            $response->set_success();
+        if ($result === FALSE) {
+            $response->set_error();
             $this->response($response);
         }
 
-        $response->set_error();
+        $response->set_success();
         $this->response($response);
     }
 }

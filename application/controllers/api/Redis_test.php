@@ -11,12 +11,12 @@ class Redis_test extends API_Controller {
 
         $r_client = RedisFactory::get_dkm_client();
         $value = $r_client->get($key);
-        if ($value) {
-            $response->set_success($value);
+        if ($value === FALSE) {
+            $response->set_error($value);
             $this->response($response);
         }
 
-        $response->set_error($value);
+        $response->set_success($value);
         $this->response($response);
     }
 
@@ -30,12 +30,12 @@ class Redis_test extends API_Controller {
         $r_client = RedisFactory::get_dkm_client();
         $result = $r_client->setEx($key, $value ,$expire);
 
-        if ($result) {
-            $response->set_success();
+        if ($result === FALSE) {
+            $response->set_error($result);
             $this->response($response);
         }
 
-        $response->set_error();
+        $response->set_success();
         $this->response($response);
     }
 }
