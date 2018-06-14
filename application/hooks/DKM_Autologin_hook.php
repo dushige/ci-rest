@@ -19,6 +19,7 @@ class DKM_Autologin_hook {
         }
         for ($i = 1; $i <= count($CI->uri->segments); $i++) {
             $req_segment_arr = array_slice($CI->uri->segments, 0, $i);
+            $req_segment_arr = array_map('strtolower', $req_segment_arr);
             if (in_array($req_segment_arr, $no_login)) {
                 return;
             }
