@@ -71,6 +71,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property CI_Xmlrpc                    $xmlrpc
  * @property CI_Zip                       $zip
  * @property CI_Loader                    $load
+ * @property CI_Lang                      $lang
  */
 class CI_Controller {
 
