@@ -844,7 +844,7 @@ abstract class REST_Controller extends \DKM_Controller {
         	elseif ($data !== NULL)
         	{
             	// If the format method exists, call and return the output in that format
-            	if (method_exists(Format::class, 'to_' . $this->response->format))
+            	if (isset($this->response->format) && method_exists(Format::class, 'to_' . $this->response->format))
             	{
                 	// Set the format header
                 	$this->output->set_content_type($this->_supported_formats[$this->response->format], strtolower($this->config->item('charset')));
