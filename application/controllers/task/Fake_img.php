@@ -18,7 +18,7 @@ class Fake_img extends Task_base {
             if (!$add_result->success) {
                 daemon_log_info("fail $add_result->message |uid: $uid, url: $url, size: $size, md5: $md5");
             } else {
-                daemon_log_info("success   |uid: $uid, url: $url, size: $size, md5: $md5");
+                daemon_log_info("success   |id:$add_result->img_id ,uid: $uid, url: $url, size: $size, md5: $md5");
             }
         }
 
