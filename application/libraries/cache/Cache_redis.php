@@ -139,7 +139,6 @@ class Cache_redis
                 $redis = new Redis();
                 list($host, $port) = explode(':', $hosts[0]);
                 $redis->connect($host, $port, $config['timeout']);
-                $redis->auth($config['password']);
             } else {
                 $redis = new RedisCluster(NULL, $hosts, $timeout, $read_timeout);
                 $redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_IGBINARY);
