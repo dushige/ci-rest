@@ -34,7 +34,8 @@
 		"h4cc/wkhtmltoimage-amd64": "0.12.x",
 		"dompdf/dompdf": "^0.8.2",
 		"phpoffice/phpword": "^0.14.0",
-		"robmorgan/phinx": "^0.10.0"
+		"robmorgan/phinx": "^0.10.0",
+		"nesbot/carbon": "^1.29"
 	},
 	"suggest": {
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x"
