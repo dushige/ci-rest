@@ -215,4 +215,35 @@ class ImgService extends BaseService {
         $result->set_success('获取成功');
         return $result;
     }
+
+    /**
+     * 根据uid获取图片
+     *
+     * @param $uid
+     * @param int $page
+     * @param int $page_size
+     * @return \Result
+     */
+    public function listByUid($uid, $page = 0, $page_size = 100) {
+        $result = new \Result();
+
+        if (!check_id($uid)) {
+            $result->set_error('参数错误:uid');
+            return $result;
+        }
+
+        load_model('img');
+        load_helper('dbquery');
+        $qc = createMixedQueryCondition();
+        $qc->where('uid', WHERE_OPERATOR_EQUAL, $uid);
+        $imgs = $this->CI->img->safe_list_by_page_where($qc, $page, $page_size);
+        if (empty($imgs)) {
+            $result->set_error('获取失败');
+            return $result;
+        }
+
+        $result->imgs = $imgs;
+        $result->set_success('获取成功');
+        return $result;
+    }
 }
