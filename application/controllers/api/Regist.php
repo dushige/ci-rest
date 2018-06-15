@@ -4,12 +4,12 @@ use dkm\libraries\base\API_Controller;
 use dkm\libraries\service\UserService;
 
 class Regist extends API_Controller {
-    public function index_post() {
-        $username = $this->post('username');
-        $password = $this->post('password');
-        $name = $this->post('name');
-        $email = $this->post('email');
-        $tel = $this->post('tel');
+    public function index_put() {
+        $username = $this->put('username');
+        $password = $this->put('password');
+        $name = $this->put('name');
+        $email = $this->put('email');
+        $tel = $this->put('tel');
 
         $result = new Result();
         $userService = UserService::get_instance();

@@ -4,7 +4,7 @@ use dkm\libraries\base\API_Controller;
 use dkm\libraries\util\MemcachedFactory;
 
 class Memcached_test extends API_Controller {
-    public function get_get() {
+    public function index_get() {
         $key = $this->get('key');
 
         $response = new Result();
@@ -20,10 +20,10 @@ class Memcached_test extends API_Controller {
         $this->response($response);
     }
 
-    public function set_get() {
-        $key = $this->get('key');
-        $value = $this->get('value');
-        $expire = $this->get('expire') ? $this->get('expire') : 60;
+    public function index_put() {
+        $key = $this->put('key');
+        $value = $this->put('value');
+        $expire = $this->put('expire') ? $this->put('expire') : 60;
 
         $response = new Result();
 

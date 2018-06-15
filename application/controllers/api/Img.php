@@ -4,12 +4,12 @@ use dkm\libraries\base\API_Controller;
 use dkm\libraries\service\ImgService;
 
 class Img extends API_Controller {
-    public function add_get() {
+    public function index_put() {
         $response = new Result();
-        $uid = $this->get('uid');
-        $url = $this->get('url');
-        $size = intval($this->get('size'));
-        $md5 = $this->get('md5');
+        $uid = $this->put('uid');
+        $url = $this->put('url');
+        $size = intval($this->put('size'));
+        $md5 = $this->put('md5');
 
         $imgService = ImgService::get_instance();
         $add_result = $imgService->addImg($uid, $url, $size, $md5);
@@ -23,9 +23,9 @@ class Img extends API_Controller {
         $this->response($response);
     }
 
-    public function delete_get() {
+    public function index_delete() {
         $response = new Result();
-        $img_id = $this->get('img_id');
+        $img_id = $this->delete('img_id');
 
         $imgService = ImgService::get_instance();
         $delete_result = $imgService->deleteImg($img_id);
@@ -38,7 +38,7 @@ class Img extends API_Controller {
         $this->response($response);
     }
 
-    public function get_get() {
+    public function index_get() {
         $response = new Result();
         $img_id = $this->get('img_id');
 
