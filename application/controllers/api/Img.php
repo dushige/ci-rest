@@ -57,10 +57,11 @@ class Img extends API_Controller {
     public function list_get() {
         $response = new Result();
         $uid = $this->get('uid');
-        $size = $this->get('size') ? $this->get('size') : 100;
+        $page = $this->get('page') ? $this->get('page') : 0;
+        $page_size = $this->get('size') ? $this->get('size') : 100;
 
         $imgService = ImgService::get_instance();
-        $list_result  =$imgService->listByUid($uid, $size);
+        $list_result  =$imgService->listByUid($uid, $page, $page_size);
         if (!$list_result->success) {
             $response->set_error($list_result->message);
             $this->response($response);
