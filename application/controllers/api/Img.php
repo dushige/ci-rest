@@ -61,7 +61,7 @@ class Img extends API_Controller {
         $page_size = $this->get('size') ? $this->get('size') : 100;
 
         $imgService = ImgService::get_instance();
-        $list_result  =$imgService->listByUid($uid, $page, $page_size);
+        $list_result  =$imgService->listImgByUid($uid, $page, $page_size);
         if (!$list_result->success) {
             $response->set_error($list_result->message);
             $this->response($response);

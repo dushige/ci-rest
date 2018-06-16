@@ -154,6 +154,16 @@ class ImgService extends BaseService {
             return $result;
         }
 
+        load_model('img');
+        $db_img = $this->CI->img->get_by_id($img_id);
+        if (empty($db_img)) {
+            $result->set_error('图片不存在');
+            return $result;
+        } elseif ((int) $db_img->img_status === self::IMG_STATUS_DELETE) {
+            $result->set_error('图片已删除');
+            return $result;
+        }
+
         $result->img_id = $img_id;
         $result->set_success();
         return $result;
@@ -224,7 +234,7 @@ class ImgService extends BaseService {
      * @param int $page_size
      * @return \Result
      */
-    public function listByUid($uid, $page = 0, $page_size = 100) {
+    public function listImgByUid($uid, $page = 0, $page_size = 100) {
         $result = new \Result();
 
         if (!check_id($uid)) {
