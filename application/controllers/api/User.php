@@ -20,7 +20,7 @@ class User extends API_Controller {
         $this->response($response);
     }
 
-    public function index_post() {
+    public function disable_post() {
         $response = new Result();
         $field = $this->post('field');
         $field_value = $this->post('field_value');
