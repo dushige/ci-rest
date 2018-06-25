@@ -2,8 +2,6 @@
 
 use dkm\libraries\base\Task_base;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use Psr\Http\Message\ResponseInterface;
 use Faker\Factory;
 
 class Fake_es extends Task_base {
