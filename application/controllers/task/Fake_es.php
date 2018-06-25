@@ -8,9 +8,7 @@ use Faker\Factory;
 
 class Fake_es extends Task_base {
     public function execute() {
-        $http_client = new Client([
-            'base_uri' => 'http://localhost:9200/person/man'
-        ]);
+        $http_client = new Client();
 
         $faker_factory = Factory::create('zh_CN');
 
@@ -20,14 +18,9 @@ class Fake_es extends Task_base {
                 'age' => mt_rand(10, 80),
                 'country' => $faker_factory->country
             ];
-            $http_client->postAsync('', $data)->then(
-                function (ResponseInterface $res) {
-                    daemon_log_info($res->getStatusCode());
-                },
-                function (RequestException $e) {
-                    daemon_log_info($e->getMessage());
-                }
-            );
+
+            $res = $http_client->post('http://localhost:9200/person/man', $data);
+            daemon_log_info($res->getBody()->getContents());
         }
 
         exit('done');
