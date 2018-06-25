@@ -6,7 +6,10 @@ use Faker\Factory;
 
 class Fake_es extends Task_base {
     public function execute() {
-        $http_client = new Client();
+        $http_client = new Client([
+            'base_uri' => 'http://47.96.101.162:9200/',
+            'headers' => ['Content-Type' => 'application/json']
+        ]);
 
         $faker_factory = Factory::create('zh_CN');
 
@@ -17,8 +20,13 @@ class Fake_es extends Task_base {
                 'country' => $faker_factory->country
             ];
 
-            $res = $http_client->post('http://localhost:9200/person/man', $data);
-            daemon_log_info($res->getBody()->getContents());
+            try {
+                $res = $http_client->post('person/man', ['json' => $data]);
+                daemon_log_info($res->getBody()->getContents());
+            } catch (Exception $e) {
+                daemon_log_info($e->getMessage());
+            }
+
         }
 
         exit('done');
