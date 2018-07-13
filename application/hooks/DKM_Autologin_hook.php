@@ -5,7 +5,7 @@ class DKM_Autologin_hook {
         $no_login = [
             [],
             ['api', 'login'],
-            ['api', 'regist'],
+            ['api', 'register'],
             ['api', 'test'],
             ['api', 'user'],
             ['api', 'img'],

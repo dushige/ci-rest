@@ -78,12 +78,14 @@ function current_uid() {
  * 检查类似id的格式，必须是整型或字符串整数
  *
  * @param int $id
+ * @param boolean $can_be_zero
  * @return boolean
  */
-function check_id($id) {
-    if (empty($id)) {
+function check_id($id, $can_be_zero = FALSE) {
+    if (!$can_be_zero && empty($id)) {
         return FALSE;
-    } elseif (is_int($id) || is_string($id) && ctype_digit($id)) {
+    }
+    if (is_int($id) || is_string($id) && ctype_digit($id)) {
         return TRUE;
     } else {
         return FALSE;
@@ -94,15 +96,21 @@ function check_id($id) {
  * 检查类似ids的格式
  *
  * @param array $ids
+ * @param boolean $can_be_empty
+ * @param boolean $can_be_zero
  * @return boolean
  */
-function check_ids($ids) {
-    if (empty($ids) || !is_array($ids)) {
+function check_ids($ids, $can_be_empty = FALSE, $can_be_zero = FALSE) {
+    if (!is_array($ids)) {
+        return FALSE;
+    }
+
+    if (!$can_be_empty && empty($ids)) {
         return FALSE;
     }
 
     foreach ($ids as $id) {
-        if (!check_id($id)) {
+        if (!check_id($id, $can_be_zero)) {
             return FALSE;
         }
     }

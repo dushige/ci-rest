@@ -15,9 +15,9 @@ class Fake_user extends Task_base {
             $username = $faker->userName;
             $password = 'AAAaaa111';
             $tel = $faker->phoneNumber;
-            $regist_result = $userService->regist($username, $password, $name, $email, $tel);
-            if (!$regist_result->success) {
-                daemon_log_info("fail  $regist_result->message | username: $username, name: $name, email: $email, tel: $tel");
+            $register_result = $userService->register($username, $password, $name, $email, $tel);
+            if (!$register_result->success) {
+                daemon_log_info("fail  $register_result->message | username: $username, name: $name, email: $email, tel: $tel");
             } else {
                 daemon_log_info("success |  username: $username, name: $name, email: $email, tel: $tel");
             }

@@ -4,9 +4,8 @@ namespace dkm\models;
 use dkm\libraries\service\UserService;
 
 /**
- * Class User
- *
- * @property string $name
+ * Class User_model
+ * @package dkm\models
  */
 class User_model extends \DKM_Model {
 

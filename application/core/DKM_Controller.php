@@ -29,6 +29,8 @@
  * @property CI_Lang                      $lang
  * @property \dkm\models\User_model       $user
  * @property \dkm\models\Img_model        $img
+ * @property \dkm\models\Department_model $department
+ * @property \dkm\models\User_group_model $user_group
  */
 abstract class DKM_Controller extends CI_Controller {
     public function __construct() {
