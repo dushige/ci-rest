@@ -1,29 +1,27 @@
 <?php
 
 namespace dkm\models;
-use dkm\libraries\service\DepartmentService;
+use dkm\libraries\service\RoleService;
 
 /**
- * Class Department_model
+ * Class Role_model
  * @package dkm\models
  */
-class Department_model extends \DKM_Model {
+class Role_model extends \DKM_Model {
 
-    protected $table_name = 'department';
+    protected $table_name = 'role';
 
     /**
      * @param $name
-     * @param $parent_id
      * @param $permission_ids
      * @param int $status
      * @return bool
      */
-    public function add($name, $parent_id, $permission_ids, $status = DepartmentService::DEPARTMENT_STATUS_NORMAL) {
+    public function add($name, $permission_ids, $status = RoleService::ROLE_STATUS_NORMAL) {
         $now = time();
 
         $data_array = [
             'name' => $name,
-            'parent_id' => $parent_id,
             'permission_ids' => $permission_ids,
             'status' => $status,
             'gmt_create' => $now,

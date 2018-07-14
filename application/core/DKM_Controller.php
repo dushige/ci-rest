@@ -31,6 +31,7 @@
  * @property \dkm\models\Img_model        $img
  * @property \dkm\models\Department_model $department
  * @property \dkm\models\User_group_model $user_group
+ * @property \dkm\models\Role_model       $role
  */
 abstract class DKM_Controller extends CI_Controller {
     public function __construct() {

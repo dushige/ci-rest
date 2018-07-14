@@ -4,6 +4,7 @@ namespace dkm\models;
 use dkm\libraries\service\UserGroupService;
 
 class User_group_model extends \DKM_Model {
+
     protected $table_name = 'user_group';
 
     /**

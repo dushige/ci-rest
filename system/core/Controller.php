@@ -76,6 +76,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property \dkm\models\Img_model        $img
  * @property \dkm\models\Department_model $department
  * @property \dkm\models\User_group_model $user_group
+ * @property \dkm\models\Role_model       $role
  */
 class CI_Controller {
 

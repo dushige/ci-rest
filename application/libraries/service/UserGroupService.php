@@ -3,6 +3,11 @@
 namespace dkm\libraries\service;
 use dkm\libraries\base\BaseService;
 
+/**
+ * Class UserGroupService
+ * @package dkm\libraries\service
+ * @method static UserGroupService get_instance()
+ */
 class UserGroupService extends BaseService {
     const USER_GROUP_STATUS_NORMAL = 1;
     const USER_GROUP_STATUS_DISABLE = 2;
@@ -22,7 +27,7 @@ class UserGroupService extends BaseService {
      * @param int $status
      * @return \Result
      */
-    public function addUserGroup($name, $parent_id, $role_ids, $permission_ids, $status = self::USER_GROUP_STATUS_NORMAL) {
+    public function addUserGroup($name, $parent_id, $role_ids = [], $permission_ids = [], $status = self::USER_GROUP_STATUS_NORMAL) {
         $result = $this->beforeAddUserGroup($name ,$parent_id, $role_ids, $permission_ids, $status);
         if (!$result->success) {
             return $result;
@@ -63,7 +68,7 @@ class UserGroupService extends BaseService {
             return $result;
         }
 
-        if (!check_ids($permission_ids)) {
+        if (!check_ids($permission_ids, TRUE)) {
             $result->set_error('参数错误:permission_ids');
             return $result;
         }
@@ -100,7 +105,22 @@ class UserGroupService extends BaseService {
      * @return \Result
      */
     private function doAddUserGroup(&$result) {
-        // TODO
+        $name = $result->name;
+        $parent_id = $result->parent_id;
+        $role_ids = $result->role_ids;
+        $permission_ids = $result->permission_ids;
+        $status = $result->status;
+
+        load_model('user_group');
+        $user_group_id = $this->CI->user_group->add($name, $parent_id, $role_ids, $permission_ids, $status);
+        if (empty($user_group_id)) {
+            $result->set_error('网络繁忙');
+            return $result;
+        }
+
+        $result->user_group_id = $user_group_id;
+        $result->set_success('添加成功');
+        return $result;
     }
 
     /**
