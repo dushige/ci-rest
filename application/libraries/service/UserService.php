@@ -31,18 +31,18 @@ class UserService extends BaseService {
      * @param int $status
      * @return \Result
      */
-    public function regist($username, $password, $name, $email, $tel, $status = self::USER_STATUS_NORMAL) {
-        $result = $this->beforeRegist($username, $password, $name, $email, $tel, $status);
+    public function register($username, $password, $name, $email, $tel, $status = self::USER_STATUS_NORMAL) {
+        $result = $this->beforeRegister($username, $password, $name, $email, $tel, $status);
         if (!$result->success) {
             return $result;
         }
 
-        $this->doRegist($result);
+        $this->doRegister($result);
         if (!$result->success) {
             return $result;
         }
 
-        $this->afterRegist($result);
+        $this->afterRegister($result);
         return $result;
     }
 
@@ -57,7 +57,7 @@ class UserService extends BaseService {
      * @param string $status
      * @return \Result
      */
-    private function beforeRegist($username, $password, $name, $email, $tel, $status) {
+    private function beforeRegister($username, $password, $name, $email, $tel, $status) {
         $result = new \Result();
 
         if (!check_username($username)) {
@@ -129,7 +129,7 @@ class UserService extends BaseService {
      * @param \Result $result
      * @return \Result
      */
-    private function doRegist(&$result) {
+    private function doRegister(&$result) {
         $username = $result->username;
         $password = $result->password;
         $name = $result->name;
@@ -155,7 +155,7 @@ class UserService extends BaseService {
      * @param \Result $result
      * @return \Result
      */
-    private function afterRegist(&$result) {
+    private function afterRegister(&$result) {
         // 暂时不做什么
         return $result;
     }
@@ -163,10 +163,8 @@ class UserService extends BaseService {
     /**
      * 用户登陆，支持username, tel, email登陆
      *
-     * @param string $username
+     * @param string $field
      * @param string $password
-     * @param string $tel
-     * @param string $email
      * @return \Result
      */
     public function login($field, $password) {

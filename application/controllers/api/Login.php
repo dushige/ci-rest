@@ -4,9 +4,9 @@ use dkm\libraries\base\API_Controller;
 use dkm\libraries\service\UserService;
 
 class Login extends API_Controller {
-    public function index_put() {
-        $username = $this->put('username');
-        $password = $this->put('password');
+    public function index_post() {
+        $username = $this->post('username');
+        $password = $this->post('password');
         $result = new Result();
 
         if (is_login()) {

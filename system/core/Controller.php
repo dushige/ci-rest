@@ -72,6 +72,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property CI_Zip                       $zip
  * @property CI_Loader                    $load
  * @property CI_Lang                      $lang
+ * @property \dkm\models\User_model       $user
+ * @property \dkm\models\Img_model        $img
+ * @property \dkm\models\Department_model $department
+ * @property \dkm\models\User_group_model $user_group
+ * @property \dkm\models\Role_model       $role
  */
 class CI_Controller {
 

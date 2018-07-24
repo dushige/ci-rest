@@ -3,7 +3,7 @@
 use dkm\libraries\base\API_Controller;
 use dkm\libraries\service\UserService;
 
-class Regist extends API_Controller {
+class Register extends API_Controller {
     public function index_put() {
         $username = $this->put('username');
         $password = $this->put('password');
@@ -13,13 +13,13 @@ class Regist extends API_Controller {
 
         $result = new Result();
         $userService = UserService::get_instance();
-        $regist_result = $userService->regist($username, $password, $name, $email, $tel);
-        if (!$regist_result->success) {
-            $result->set_error($regist_result->message);
+        $register_result = $userService->register($username, $password, $name, $email, $tel);
+        if (!$register_result->success) {
+            $result->set_error($register_result->message);
             $this->response($result);
         } else {
-            $result->uid = $regist_result->uid;
-            $result->set_success($regist_result->message);
+            $result->uid = $register_result->uid;
+            $result->set_success($register_result->message);
             $this->response($result);
         }
     }
