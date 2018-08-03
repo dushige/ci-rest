@@ -1,6 +1,6 @@
 <?php
 
-class Welcome extends CI_Controller {
+class Welcome extends DKM_Controller {
 
 	/**
 	 * Index Page for this controller.

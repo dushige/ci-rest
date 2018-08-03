@@ -15,6 +15,7 @@ class DKM_Autologin_hook {
             ['api', 'memcached_test'],
             ['api', 'redis_test'],
             ['task'],
+            ['markdown'],
         ];
 
         $CI = &get_instance();

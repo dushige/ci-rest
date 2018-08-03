@@ -309,3 +309,23 @@ function check_img_size($size) {
 
     return TRUE;
 }
+
+/**
+ * 获取get参数
+ *
+ * @param $name
+ * @return string
+ */
+function input_get($name) {
+    return trim(get_instance()->input->get($name));
+}
+
+/**
+ * 获取post参数
+ *
+ * @param $name
+ * @return string
+ */
+function input_post($name) {
+    return trim(get_instance()->input->post($name));
+}
