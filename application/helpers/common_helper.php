@@ -316,7 +316,7 @@ function check_img_size($size) {
  * @param $name
  * @return string
  */
-function input_get($name) {
+function get_param($name) {
     return trim(get_instance()->input->get($name));
 }
 
@@ -326,6 +326,6 @@ function input_get($name) {
  * @param $name
  * @return string
  */
-function input_post($name) {
+function post_param($name) {
     return trim(get_instance()->input->post($name));
 }
